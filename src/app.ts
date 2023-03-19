@@ -2,6 +2,8 @@ import "dotenv/config";
 import morgan from "morgan";
 import express, { Application } from "express";
 
+import { AppDataSource } from "./config";
+
 class Server {
   private app: Application;
   private port: string;
@@ -22,9 +24,13 @@ class Server {
   routes() {}
 
   listen() {
-    this.app.listen(this.port, () => {
-      console.log(`🚀 App running on port ${this.port}`);
-    });
+    AppDataSource.initialize()
+      .then(() => {
+        this.app.listen(this.port, () => {
+          console.log(`🚀 App running on port ${this.port}`);
+        });
+      })
+      .catch((error) => console.log(error));
   }
 }
 
