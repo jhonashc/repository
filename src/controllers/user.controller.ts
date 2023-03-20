@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 
 import { CreateUserDto, UpdateUserDto } from "../dtos";
 import { User } from "../entities";
+import { encryptPassword } from "../helpers";
 import { UserService } from "../services";
 
 const userService = new UserService();
@@ -33,7 +34,7 @@ export class UserController {
         lastName,
         username,
         email,
-        password,
+        password: await encryptPassword(password),
         avatarUrl,
         roles,
       };
@@ -120,7 +121,7 @@ export class UserController {
         lastName,
         username,
         email,
-        password,
+        password: password && (await encryptPassword(password)),
         avatarUrl,
         roles,
       };
@@ -134,6 +135,8 @@ export class UserController {
         data: updatedUser,
       });
     } catch (error) {
+      console.log(error);
+
       res.status(500).json({
         status: false,
         message: error,
