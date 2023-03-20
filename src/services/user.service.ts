@@ -1,11 +1,11 @@
-import { Repository } from "typeorm";
+import { Repository, UpdateResult } from "typeorm";
 
 import { AppDataSource } from "../config";
+import { CreateUserDto, UpdateUserDto } from "../dtos";
 import { User } from "../entities";
-import { CreateUserDto } from "../dtos/user.dto";
 
 export class UserService {
-  private userRepository: Repository<User>;
+  private readonly userRepository: Repository<User>;
 
   constructor() {
     this.userRepository = AppDataSource.getRepository(User);
@@ -28,6 +28,28 @@ export class UserService {
       where: {
         email,
       },
+    });
+  }
+
+  getUserById(id: string): Promise<User | null> {
+    return this.userRepository.findOne({
+      where: {
+        id,
+        status: true,
+      },
+    });
+  }
+
+  updateUserById(
+    id: string,
+    updateUserDto: UpdateUserDto
+  ): Promise<UpdateResult> {
+    return this.userRepository.update(id, updateUserDto);
+  }
+
+  deleteUserById(id: string): Promise<UpdateResult> {
+    return this.userRepository.update(id, {
+      status: false,
     });
   }
 }
