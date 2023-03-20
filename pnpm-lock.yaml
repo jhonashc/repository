@@ -14,6 +14,7 @@ specifiers:
   nodemon: ^2.0.21
   pg: ^8.10.0
   reflect-metadata: ^0.1.13
+  slugify: ^1.6.5
   ts-node: ^10.9.1
   typeorm: ^0.3.12
   typescript: ^5.0.2
@@ -27,6 +28,7 @@ dependencies:
   morgan: 1.10.0
   pg: 8.10.0
   reflect-metadata: 0.1.13
+  slugify: 1.6.5
   typeorm: 0.3.12_pg@8.10.0+ts-node@10.9.1
 
 devDependencies:
@@ -1334,6 +1336,11 @@ packages:
     dependencies:
       semver: 7.0.0
     dev: true
+
+  /slugify/1.6.5:
+    resolution: {integrity: sha512-8mo9bslnBO3tr5PEVFzMPIWwWnipGS0xVbYf65zxDqfNwmzYn1LpiKNrR6DlClusuvo+hDHd1zKpmfAe83NQSQ==}
+    engines: {node: '>=8.0.0'}
+    dev: false
 
   /split2/4.1.0:
     resolution: {integrity: sha512-VBiJxFkxiXRlUIeyMQi8s4hgvKCSjtknJv/LVYbrgALPwf5zSKmEwV9Lst25AkvMDnvxODugjdl6KZgwKM1WYQ==}

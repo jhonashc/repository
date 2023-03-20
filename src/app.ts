@@ -4,12 +4,13 @@ import morgan from "morgan";
 import express, { Application } from "express";
 
 import { AppDataSource } from "./config";
-import { userRouter } from "./routes";
+import { repositoryRouter, userRouter } from "./routes";
 
 class Server {
   private app: Application;
   private port: string;
   private apiRoutes = {
+    repositories: "/api/repositories",
     users: "/api/users",
   };
 
@@ -27,6 +28,7 @@ class Server {
   }
 
   routes() {
+    this.app.use(this.apiRoutes.repositories, repositoryRouter);
     this.app.use(this.apiRoutes.users, userRouter);
   }
 
