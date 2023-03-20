@@ -2,9 +2,12 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
+
+import { Repository } from "./repository.entity";
 
 @Entity("user")
 export class User {
@@ -47,6 +50,9 @@ export class User {
     default: ["user"],
   })
   roles: string[];
+
+  @OneToMany(() => Repository, (repository) => repository.author)
+  repositories: Repository[];
 
   @Column({
     type: "boolean",
