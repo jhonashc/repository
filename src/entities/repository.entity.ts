@@ -13,7 +13,7 @@ import { User } from "./user.entity";
 import { RepositoryTag } from "./repository-tag.entity";
 
 export enum RepositoryStatus {
-  PENDING = "pendind",
+  PENDING = "pending",
   ACCEPTED = "accepted",
   REJECTED = "rejected",
   DELETED = "deleted",
@@ -55,7 +55,7 @@ export class Repository {
   author: User;
 
   @OneToMany(() => RepositoryTag, (repositoryTag) => repositoryTag.repository)
-  repositoryTags: RepositoryTag[];
+  tags: RepositoryTag[];
 
   @Column({
     type: "enum",

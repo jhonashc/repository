@@ -33,7 +33,7 @@ export class Tag {
   status: boolean;
 
   @OneToMany(() => RepositoryTag, (repositoryTag) => repositoryTag.tag)
-  repositoryTags: RepositoryTag[];
+  repositories: RepositoryTag[];
 
   @CreateDateColumn({
     type: "timestamp",

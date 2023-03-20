@@ -16,7 +16,7 @@ export class RepositoryTag {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 
-  @ManyToOne(() => Repository, (repository) => repository.repositoryTags, {
+  @ManyToOne(() => Repository, (repository) => repository.tags, {
     onUpdate: "CASCADE",
   })
   @JoinColumn({
@@ -24,7 +24,7 @@ export class RepositoryTag {
   })
   repository: Repository;
 
-  @ManyToOne(() => Tag, (tag) => tag.repositoryTags, {
+  @ManyToOne(() => Tag, (tag) => tag.repositories, {
     onUpdate: "CASCADE",
   })
   @JoinColumn({
