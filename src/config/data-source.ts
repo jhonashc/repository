@@ -1,5 +1,7 @@
 import { DataSource } from "typeorm";
 
+import { User } from "../entities";
+
 export const AppDataSource = new DataSource({
   type: "postgres",
   host: process.env.HOST || "localhost",
@@ -9,7 +11,7 @@ export const AppDataSource = new DataSource({
   database: process.env.DB_NAME,
   synchronize: true,
   logging: true,
-  entities: ["dist/**/*.entity{.ts,.js}"],
+  entities: [User],
   subscribers: [],
   migrations: [],
 });
