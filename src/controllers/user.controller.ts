@@ -1,14 +1,15 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 
 import { CreateUserDto, PaginationDto, UpdateUserDto } from "../dtos";
 import { User } from "../entities";
+import { ConflictException, NotFoundException } from "../exceptions";
 import { encryptPassword } from "../helpers";
 import { UserService } from "../services";
 
 const userService = new UserService();
 
 export class UserController {
-  async createUser(req: Request, res: Response) {
+  async createUser(req: Request, res: Response, next: NextFunction) {
     try {
       const {
         firstName,
@@ -23,10 +24,7 @@ export class UserController {
       const userFound: User | null = await userService.getUserByEmail(email);
 
       if (userFound) {
-        return res.status(409).json({
-          status: false,
-          message: "The user already exists",
-        });
+        throw new ConflictException("The user already exists");
       }
 
       const createUserDto: CreateUserDto = {
@@ -46,14 +44,11 @@ export class UserController {
         data: createdUser,
       });
     } catch (error) {
-      res.status(500).json({
-        status: false,
-        message: error,
-      });
+      next(error);
     }
   }
 
-  async getUsers(req: Request, res: Response) {
+  async getUsers(req: Request, res: Response, next: NextFunction) {
     try {
       const { limit, offset } = req.query as PaginationDto;
 
@@ -64,24 +59,18 @@ export class UserController {
         data: users,
       });
     } catch (error) {
-      res.status(500).json({
-        status: false,
-        message: error,
-      });
+      next(error);
     }
   }
 
-  async getUserById(req: Request, res: Response) {
+  async getUserById(req: Request, res: Response, next: NextFunction) {
     try {
       const { id } = req.params;
 
       const userFound: User | null = await userService.getUserById(id);
 
       if (!userFound) {
-        return res.status(404).json({
-          status: false,
-          message: "The user has not been found",
-        });
+        throw new NotFoundException("The user has not been found");
       }
 
       res.json({
@@ -89,14 +78,11 @@ export class UserController {
         data: userFound,
       });
     } catch (error) {
-      res.status(500).json({
-        status: false,
-        message: error,
-      });
+      next(error);
     }
   }
 
-  async updateUserById(req: Request, res: Response) {
+  async updateUserById(req: Request, res: Response, next: NextFunction) {
     try {
       const { id } = req.params;
       const {
@@ -112,10 +98,7 @@ export class UserController {
       const userFound: User | null = await userService.getUserById(id);
 
       if (!userFound) {
-        return res.status(404).json({
-          status: false,
-          message: "The user has not been found",
-        });
+        throw new NotFoundException("The user has not been found");
       }
 
       const updateUserDto: UpdateUserDto = {
@@ -137,26 +120,18 @@ export class UserController {
         data: updatedUser,
       });
     } catch (error) {
-      console.log(error);
-
-      res.status(500).json({
-        status: false,
-        message: error,
-      });
+      next(error);
     }
   }
 
-  async deleteUserById(req: Request, res: Response) {
+  async deleteUserById(req: Request, res: Response, next: NextFunction) {
     try {
       const { id } = req.params;
 
       const userFound: User | null = await userService.getUserById(id);
 
       if (!userFound) {
-        return res.status(404).json({
-          status: false,
-          message: "The user has not been found",
-        });
+        throw new NotFoundException("The user has not been found");
       }
 
       await userService.deleteUserById(id);
@@ -171,10 +146,7 @@ export class UserController {
         data: deletedUser,
       });
     } catch (error) {
-      res.status(500).json({
-        status: false,
-        message: error,
-      });
+      next(error);
     }
   }
 }

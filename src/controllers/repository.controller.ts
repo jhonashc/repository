@@ -1,14 +1,15 @@
 import slugify from "slugify";
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 
 import { CreateRepositoryDto, PaginationDto } from "../dtos";
 import { Repository } from "../entities";
+import { ConflictException } from "../exceptions";
 import { RepositoryService } from "../services";
 
 const repositoryService = new RepositoryService();
 
 export class RepositoryController {
-  async createRepository(req: Request, res: Response) {
+  async createRepository(req: Request, res: Response, next: NextFunction) {
     try {
       const { title, slug, description, body, author, tags } =
         req.body as CreateRepositoryDto;
@@ -19,10 +20,7 @@ export class RepositoryController {
         await repositoryService.getRepositoryByTitle(lowerCaseTitle);
 
       if (repositoryFound) {
-        return res.status(409).json({
-          status: false,
-          message: "The repository already exists",
-        });
+        throw new ConflictException("The repository already exists");
       }
 
       const createRepositoryDto: CreateRepositoryDto = {
@@ -42,16 +40,11 @@ export class RepositoryController {
         data: createdRepository,
       });
     } catch (error) {
-      console.log(error);
-
-      res.status(500).json({
-        status: false,
-        message: error,
-      });
+      next(error);
     }
   }
 
-  async getRepositories(req: Request, res: Response) {
+  async getRepositories(req: Request, res: Response, next: NextFunction) {
     try {
       const { limit, offset } = req.query as PaginationDto;
 
@@ -73,10 +66,7 @@ export class RepositoryController {
         data: mappedRepositories,
       });
     } catch (error) {
-      res.status(500).json({
-        status: false,
-        message: error,
-      });
+      next(error);
     }
   }
 }
