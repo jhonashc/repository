@@ -1,7 +1,7 @@
 import { Repository, UpdateResult } from "typeorm";
 
 import { AppDataSource } from "../config";
-import { CreateUserDto, UpdateUserDto } from "../dtos";
+import { CreateUserDto, UpdateUserDto, PaginationDto } from "../dtos";
 import { User } from "../entities";
 
 export class UserService {
@@ -15,11 +15,15 @@ export class UserService {
     return this.userRepository.save(createUserDto);
   }
 
-  getUsers(): Promise<User[]> {
+  getUsers(paginationDto: PaginationDto): Promise<User[]> {
+    const { limit = 10, offset = 0 } = paginationDto;
+
     return this.userRepository.find({
       where: {
         status: true,
       },
+      take: limit,
+      skip: offset,
     });
   }
 

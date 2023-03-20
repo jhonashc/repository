@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 
-import { CreateUserDto, UpdateUserDto } from "../dtos";
+import { CreateUserDto, PaginationDto, UpdateUserDto } from "../dtos";
 import { User } from "../entities";
 import { encryptPassword } from "../helpers";
 import { UserService } from "../services";
@@ -18,7 +18,7 @@ export class UserController {
         password,
         avatarUrl,
         roles,
-      } = req.body;
+      } = req.body as CreateUserDto;
 
       const userFound: User | null = await userService.getUserByEmail(email);
 
@@ -41,7 +41,7 @@ export class UserController {
 
       const createdUser: User = await userService.createUser(createUserDto);
 
-      res.json({
+      res.status(201).json({
         status: true,
         data: createdUser,
       });
@@ -55,7 +55,9 @@ export class UserController {
 
   async getUsers(req: Request, res: Response) {
     try {
-      const users: User[] = await userService.getUsers();
+      const { limit, offset } = req.query as PaginationDto;
+
+      const users: User[] = await userService.getUsers({ limit, offset });
 
       res.json({
         status: true,
@@ -105,7 +107,7 @@ export class UserController {
         password,
         avatarUrl,
         roles,
-      } = req.body;
+      } = req.body as UpdateUserDto;
 
       const userFound: User | null = await userService.getUserById(id);
 
