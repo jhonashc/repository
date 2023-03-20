@@ -32,7 +32,7 @@ export class UserController {
       const createUserDto: CreateUserDto = {
         firstName,
         lastName,
-        username,
+        username: username.toLowerCase(),
         email,
         password: await encryptPassword(password),
         avatarUrl,
