@@ -1,4 +1,4 @@
-import { Equal, In, Repository } from "typeorm";
+import { DeepPartial, Equal, In, Repository } from "typeorm";
 
 import { AppDataSource } from "../config";
 import { CreateRepositoryDto, PaginationDto } from "../dtos";
@@ -17,16 +17,29 @@ export class RepositoryService {
     this.repositoryTag = AppDataSource.getRepository(RepositoryTag);
   }
 
-  async createRepository(createRepositoryDto: CreateRepositoryDto) {
-    const { tags = [], ...repositoryDetails } = createRepositoryDto;
+  async createRepository(
+    createRepositoryDto: CreateRepositoryDto
+  ): Promise<RepositoryEntity> {
+    const { authorId, tagIds = [], ...repositoryDetails } = createRepositoryDto;
+    const tags: DeepPartial<RepositoryTag[]> = tagIds.map((tagId) => ({
+      tag: {
+        id: tagId,
+      },
+    }));
 
-    const createdRepository = this.repository.create({ ...repositoryDetails });
+    const createdRepository: RepositoryEntity = this.repository.create({
+      author: {
+        id: authorId,
+      },
+      ...repositoryDetails,
+    });
     await this.repository.save(createdRepository);
 
-    const createdRepositoryTags = this.repositoryTag.create(tags);
-    createdRepositoryTags.forEach(
-      (repositoryTag) => (repositoryTag.repository = createdRepository)
-    );
+    const createdRepositoryTags: RepositoryTag[] =
+      this.repositoryTag.create(tags);
+
+    createdRepositoryTags.forEach((rt) => (rt.repository = createdRepository));
+
     await this.repositoryTag.save(createdRepositoryTags);
 
     return createdRepository;
