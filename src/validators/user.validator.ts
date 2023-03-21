@@ -1,4 +1,5 @@
 import { check } from "express-validator";
+
 import { ValidateRequest } from "../middlewares";
 
 export const validateCreateUser = [
@@ -12,6 +13,19 @@ export const validateCreateUser = [
     .isEmail()
     .withMessage("invalid email"),
   check("password").not().isEmpty().withMessage("password cannot be empty"),
+  check("roles")
+    .optional()
+    .isIn(["user", "admin"])
+    .withMessage("invalid roles"),
+  ValidateRequest,
+];
+
+export const validateUpdateUser = [
+  check("firstName").optional(),
+  check("lastName").optional(),
+  check("username").optional(),
+  check("email").optional().isEmail().withMessage("invalid email"),
+  check("password").optional(),
   check("roles")
     .optional()
     .isIn(["user", "admin"])
