@@ -1,12 +1,10 @@
-import { RepositoryTag, User } from "../entities";
-
 export interface CreateRepositoryDto {
   title: string;
   slug?: string;
   description?: string;
   body: string;
-  author: User;
-  tags?: RepositoryTag[];
+  authorId: string;
+  tagIds?: string[];
 }
 
 export interface UpdateRepositoryDto {}
