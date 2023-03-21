@@ -47,7 +47,7 @@ export class User {
     name: "avatar_url",
     nullable: true,
   })
-  avatarUrl: string;
+  avatarUrl?: string;
 
   @Column({
     type: "text",
@@ -57,7 +57,7 @@ export class User {
   roles: string[];
 
   @OneToMany(() => Repository, (repository) => repository.author)
-  repositories: Repository[];
+  repositories?: Repository[];
 
   @Column({
     type: "boolean",

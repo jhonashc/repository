@@ -24,7 +24,7 @@ export class Tag {
     type: "text",
     nullable: true,
   })
-  description: string;
+  description?: string;
 
   @Column({
     type: "boolean",
@@ -33,7 +33,7 @@ export class Tag {
   status: boolean;
 
   @OneToMany(() => RepositoryTag, (repositoryTag) => repositoryTag.tag)
-  repositories: RepositoryTag[];
+  repositories?: RepositoryTag[];
 
   @CreateDateColumn({
     type: "timestamp",

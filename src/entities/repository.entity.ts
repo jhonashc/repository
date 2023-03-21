@@ -40,7 +40,7 @@ export class Repository {
     type: "text",
     nullable: false,
   })
-  description: string;
+  description?: string;
 
   @Column({
     type: "text",
@@ -55,7 +55,7 @@ export class Repository {
   author: User;
 
   @OneToMany(() => RepositoryTag, (repositoryTag) => repositoryTag.repository)
-  tags: RepositoryTag[];
+  tags?: RepositoryTag[];
 
   @Column({
     type: "enum",
