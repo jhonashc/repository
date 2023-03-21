@@ -13,7 +13,7 @@ export const ExceptionHandler = (
 
     return res.status(statusCode).json({
       success: false,
-      message,
+      message: message.includes(",") ? message.split(",") : message,
     });
   }
 
