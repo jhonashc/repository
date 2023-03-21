@@ -1,1 +1,1 @@
-export { ExceptionHandler } from "./exception-handler.exception";
+export { exceptionHandler } from "./exception-handler.middleware";

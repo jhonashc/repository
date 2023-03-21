@@ -4,7 +4,7 @@ import morgan from "morgan";
 import express, { Application } from "express";
 
 import { AppDataSource } from "./config";
-import { ExceptionHandler } from "./middlewares";
+import { exceptionHandler } from "./middlewares";
 import { repositoryRouter, userRouter } from "./routes";
 
 class Server {
@@ -21,7 +21,7 @@ class Server {
 
     this.middlewares();
     this.routes();
-    
+
     this.customMiddlewares();
   }
 
@@ -31,7 +31,7 @@ class Server {
   }
 
   customMiddlewares() {
-    this.app.use(ExceptionHandler);
+    this.app.use(exceptionHandler);
   }
 
   routes() {
