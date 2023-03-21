@@ -1,7 +1,11 @@
 import { Router } from "express";
 
 import { RepositoryController } from "../controllers";
-import { validateCreateRepository } from "../validators";
+import {
+  validateCreateRepository,
+  validatePaginationQuery,
+  validateUuidParam,
+} from "../validators";
 
 const router = Router();
 
@@ -13,6 +17,14 @@ router.post(
   repositoryController.createRepository
 );
 
-router.get("/", repositoryController.getRepositories);
+router.get("/", validatePaginationQuery, repositoryController.getRepositories);
+
+router.get("/:id", validateUuidParam, repositoryController.getRepositoryById);
+
+router.delete(
+  "/:id",
+  validateUuidParam,
+  repositoryController.deleteRepositoryById
+);
 
 export default router;

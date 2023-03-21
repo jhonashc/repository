@@ -3,7 +3,7 @@ import { NextFunction, Request, Response } from "express";
 
 import { CreateRepositoryDto, PaginationDto } from "../dtos";
 import { Repository } from "../entities";
-import { ConflictException } from "../exceptions";
+import { ConflictException, NotFoundException } from "../exceptions";
 import { RepositoryService } from "../services";
 
 const repositoryService = new RepositoryService();
@@ -20,7 +20,9 @@ export class RepositoryController {
         await repositoryService.getRepositoryByTitle(lowerCaseTitle);
 
       if (repositoryFound) {
-        throw new ConflictException("The repository already exists");
+        throw new ConflictException(
+          `The repository with title ${lowerCaseTitle} already exists`
+        );
       }
 
       const createRepositoryDto: CreateRepositoryDto = {
@@ -64,6 +66,57 @@ export class RepositoryController {
       res.json({
         status: true,
         data: mappedRepositories,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async getRepositoryById(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { id } = req.params;
+
+      const repositoryFound: Repository | null =
+        await repositoryService.getRepositoryById(id);
+
+      if (!repositoryFound) {
+        throw new NotFoundException(
+          `The repository with id ${id} has not been found`
+        );
+      }
+
+      const mappedRepository = {
+        ...repositoryFound,
+        tags: repositoryFound.tags?.map(({ tag }) => tag),
+      };
+
+      res.json({
+        status: true,
+        data: mappedRepository,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async deleteRepositoryById(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { id } = req.params;
+
+      const repositoryFound: Repository | null =
+        await repositoryService.getRepositoryById(id);
+
+      if (!repositoryFound) {
+        throw new NotFoundException(
+          `The repository with id ${id} has not been found`
+        );
+      }
+
+      await repositoryService.deleteRepositoryById(id);
+
+      res.json({
+        status: true,
+        data: repositoryFound,
       });
     } catch (error) {
       next(error);

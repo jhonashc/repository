@@ -3,6 +3,7 @@ import { Router } from "express";
 import { UserController } from "../controllers";
 import {
   validateCreateUser,
+  validatePaginationQuery,
   validateUpdateUser,
   validateUuidParam,
 } from "../validators";
@@ -13,7 +14,7 @@ const userController = new UserController();
 
 router.post("/", validateCreateUser, userController.createUser);
 
-router.get("/", userController.getUsers);
+router.get("/", validatePaginationQuery, userController.getUsers);
 
 router.get("/:id", validateUuidParam, userController.getUserById);
 

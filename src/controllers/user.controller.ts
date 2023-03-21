@@ -28,7 +28,9 @@ export class UserController {
       );
 
       if (userFound) {
-        throw new ConflictException("The user already exists");
+        throw new ConflictException(
+          `The user with email ${email} already exists`
+        );
       }
 
       const createUserDto: CreateUserDto = {
@@ -74,7 +76,9 @@ export class UserController {
       const userFound: User | null = await userService.getUserById(id);
 
       if (!userFound) {
-        throw new NotFoundException("The user has not been found");
+        throw new NotFoundException(
+          `The user with id ${id} has not been found`
+        );
       }
 
       res.json({
@@ -104,7 +108,9 @@ export class UserController {
       const userFound: User | null = await userService.getUserById(id);
 
       if (!userFound) {
-        throw new NotFoundException("The user has not been found");
+        throw new NotFoundException(
+          `The user with id ${id} has not been found`
+        );
       }
 
       const updateUserDto: UpdateUserDto = {
@@ -137,19 +143,16 @@ export class UserController {
       const userFound: User | null = await userService.getUserById(id);
 
       if (!userFound) {
-        throw new NotFoundException("The user has not been found");
+        throw new NotFoundException(
+          `The user with id ${id} has not been found`
+        );
       }
 
       await userService.deleteUserById(id);
 
-      const deletedUser: User = {
-        ...userFound,
-        status: false,
-      };
-
       res.json({
         status: true,
-        data: deletedUser,
+        data: userFound,
       });
     } catch (error) {
       next(error);
