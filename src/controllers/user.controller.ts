@@ -21,7 +21,11 @@ export class UserController {
         roles,
       } = req.body as CreateUserDto;
 
-      const userFound: User | null = await userService.getUserByEmail(email);
+      const lowerCaseEmail = email.toLowerCase();
+
+      const userFound: User | null = await userService.getUserByEmail(
+        lowerCaseEmail
+      );
 
       if (userFound) {
         throw new ConflictException("The user already exists");
@@ -31,7 +35,7 @@ export class UserController {
         firstName,
         lastName,
         username: username.toLowerCase(),
-        email,
+        email: lowerCaseEmail,
         password: await encryptPassword(password),
         avatarUrl,
         roles,
@@ -95,6 +99,8 @@ export class UserController {
         roles,
       } = req.body as UpdateUserDto;
 
+      const lowerCaseEmail = email?.toLowerCase();
+
       const userFound: User | null = await userService.getUserById(id);
 
       if (!userFound) {
@@ -104,8 +110,8 @@ export class UserController {
       const updateUserDto: UpdateUserDto = {
         firstName,
         lastName,
-        username,
-        email,
+        username: username?.toLowerCase(),
+        email: lowerCaseEmail,
         password: password && (await encryptPassword(password)),
         avatarUrl,
         roles,

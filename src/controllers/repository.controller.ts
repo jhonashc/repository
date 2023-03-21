@@ -11,7 +11,7 @@ const repositoryService = new RepositoryService();
 export class RepositoryController {
   async createRepository(req: Request, res: Response, next: NextFunction) {
     try {
-      const { title, slug, description, body, author, tags } =
+      const { title, slug, description, body, authorId, tagIds } =
         req.body as CreateRepositoryDto;
 
       const lowerCaseTitle = title.toLowerCase();
@@ -28,8 +28,8 @@ export class RepositoryController {
         slug: slug ? slug : slugify(lowerCaseTitle),
         description,
         body,
-        author,
-        tags,
+        authorId,
+        tagIds,
       };
 
       const createdRepository: Repository =
@@ -57,7 +57,7 @@ export class RepositoryController {
       const mappedRepositories = repositories.map((repository) => {
         return {
           ...repository,
-          tags: repository.tags.map(({ tag }) => tag),
+          tags: repository.tags?.map(({ tag }) => tag),
         };
       });
 
