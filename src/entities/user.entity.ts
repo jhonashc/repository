@@ -28,6 +28,11 @@ export class User {
 
   @Column({
     type: "text",
+  })
+  username: string;
+
+  @Column({
+    type: "text",
     unique: true,
   })
   email: string;
