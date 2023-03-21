@@ -1,10 +1,9 @@
 import {
-  Column,
   CreateDateColumn,
   Entity,
   JoinColumn,
   ManyToOne,
-  PrimaryGeneratedColumn,
+  PrimaryColumn,
   UpdateDateColumn,
 } from "typeorm";
 
@@ -13,11 +12,18 @@ import { Tag } from "./tag.entity";
 
 @Entity("repository_tag")
 export class RepositoryTag {
-  @PrimaryGeneratedColumn("uuid")
-  id: string;
+  @PrimaryColumn({
+    name: "repository_id",
+  })
+  repositoryId: string;
+
+  @PrimaryColumn({
+    name: "tag_id",
+  })
+  tagId: string;
 
   @ManyToOne(() => Repository, (repository) => repository.tags, {
-    onUpdate: "CASCADE",
+    onDelete: "CASCADE",
   })
   @JoinColumn({
     name: "repository_id",
@@ -25,18 +31,12 @@ export class RepositoryTag {
   repository: Repository;
 
   @ManyToOne(() => Tag, (tag) => tag.repositories, {
-    onUpdate: "CASCADE",
+    onDelete: "CASCADE",
   })
   @JoinColumn({
     name: "tag_id",
   })
   tag: Tag;
-
-  @Column({
-    type: "boolean",
-    default: true,
-  })
-  status: boolean;
 
   @CreateDateColumn({
     type: "timestamp",
