@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 
 import { BaseError } from "../exceptions";
 
-export const exceptionHandler = (
+export const ExceptionHandler = (
   error: Error,
   req: Request,
   res: Response,
