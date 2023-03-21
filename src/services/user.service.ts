@@ -1,4 +1,4 @@
-import { Repository, UpdateResult } from "typeorm";
+import { DeleteResult, Repository, UpdateResult } from "typeorm";
 
 import { AppDataSource } from "../config";
 import { CreateUserDto, UpdateUserDto, PaginationDto } from "../dtos";
@@ -19,9 +19,6 @@ export class UserService {
     const { limit = 10, offset = 0 } = paginationDto;
 
     return this.userRepository.find({
-      where: {
-        status: true,
-      },
       take: limit,
       skip: offset,
     });
@@ -39,7 +36,6 @@ export class UserService {
     return this.userRepository.findOne({
       where: {
         id,
-        status: true,
       },
     });
   }
@@ -51,9 +47,7 @@ export class UserService {
     return this.userRepository.update(id, updateUserDto);
   }
 
-  deleteUserById(id: string): Promise<UpdateResult> {
-    return this.userRepository.update(id, {
-      status: false,
-    });
+  deleteUserById(id: string): Promise<DeleteResult> {
+    return this.userRepository.delete(id);
   }
 }

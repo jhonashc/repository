@@ -1,4 +1,4 @@
-import { DeepPartial, Equal, In, Repository } from "typeorm";
+import { DeepPartial, DeleteResult, Equal, In, Repository } from "typeorm";
 
 import { AppDataSource } from "../config";
 import { CreateRepositoryDto, PaginationDto } from "../dtos";
@@ -33,12 +33,15 @@ export class RepositoryService {
       },
       ...repositoryDetails,
     });
+
     await this.repository.save(createdRepository);
 
     const createdRepositoryTags: RepositoryTag[] =
       this.repositoryTag.create(tags);
 
-    createdRepositoryTags.forEach((rt) => (rt.repository = createdRepository));
+    createdRepositoryTags.forEach(
+      (repositoryTag) => (repositoryTag.repository = createdRepository)
+    );
 
     await this.repositoryTag.save(createdRepositoryTags);
 
@@ -77,5 +80,27 @@ export class RepositoryService {
         ]),
       },
     });
+  }
+
+  getRepositoryById(id: string): Promise<RepositoryEntity | null> {
+    return this.repository.findOne({
+      where: {
+        id,
+        status: In([
+          RepositoryStatus.PENDING,
+          RepositoryStatus.REJECTED,
+          RepositoryStatus.ACCEPTED,
+        ]),
+      },
+      relations: {
+        tags: {
+          tag: true,
+        },
+      },
+    });
+  }
+
+  deleteRepositoryById(id: string): Promise<DeleteResult> {
+    return this.repository.delete(id);
   }
 }
