@@ -16,7 +16,6 @@ export enum RepositoryStatus {
   PENDING = "pending",
   ACCEPTED = "accepted",
   REJECTED = "rejected",
-  DELETED = "deleted",
 }
 
 @Entity("repository")
@@ -49,7 +48,7 @@ export class Repository {
 
   @ManyToOne(() => User, (user) => user.repositories, {
     eager: true,
-    onUpdate: "CASCADE",
+    onDelete: "CASCADE",
   })
   @JoinColumn({ name: "author_id" })
   author: User;

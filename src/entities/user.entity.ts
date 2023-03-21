@@ -59,12 +59,6 @@ export class User {
   @OneToMany(() => Repository, (repository) => repository.author)
   repositories?: Repository[];
 
-  @Column({
-    type: "boolean",
-    default: true,
-  })
-  status: boolean;
-
   @CreateDateColumn({
     type: "timestamp",
     name: "created_at",

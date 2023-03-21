@@ -26,12 +26,6 @@ export class Tag {
   })
   description?: string;
 
-  @Column({
-    type: "boolean",
-    default: true,
-  })
-  status: boolean;
-
   @OneToMany(() => RepositoryTag, (repositoryTag) => repositoryTag.tag)
   repositories?: RepositoryTag[];
 
