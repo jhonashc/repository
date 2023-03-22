@@ -3,7 +3,7 @@ import { validationResult } from "express-validator";
 
 import { BadRequestException } from "../exceptions";
 
-export const ValidateRequest = (
+export const validateRequest = (
   req: Request,
   res: Response,
   next: NextFunction

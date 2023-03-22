@@ -1,2 +1,3 @@
-export { ExceptionHandler } from "./exception-handler.middleware";
-export { ValidateRequest } from "./validate-request.middleware";
+export { exceptionHandler } from "./exception-handler.middleware";
+export { isAuthenticated } from "./jwt.middleware";
+export { validateRequest } from "./validate-request.middleware";
