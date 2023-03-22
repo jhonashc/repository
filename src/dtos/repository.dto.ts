@@ -7,4 +7,4 @@ export interface CreateRepositoryDto {
   tagIds?: string[];
 }
 
-export interface UpdateRepositoryDto {}
+export interface UpdateRepositoryDto extends Partial<CreateRepositoryDto> {}
