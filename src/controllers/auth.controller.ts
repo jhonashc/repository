@@ -2,13 +2,43 @@ import { NextFunction, Request, Response } from "express";
 
 import { LoginUserDto, RegisterUserDto, TokenData } from "../dtos";
 import { User } from "../entities";
-import { ConflictException } from "../exceptions";
-import { encryptPassword, generateToken } from "../helpers";
+import { ConflictException, UnauthorizedException } from "../exceptions";
+import { comparePassword, encryptPassword, generateToken } from "../helpers";
 import { UserService } from "../services";
 
 const userService = new UserService();
 
 export class AuthController {
+  async login(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { email, password } = req.body as LoginUserDto;
+
+      const userFound: User | null = await userService.getUserByEmail(email);
+
+      if (!userFound) {
+        throw new UnauthorizedException("The email or password is incorrect");
+      }
+
+      const comparedPasswords: boolean = await comparePassword(
+        password,
+        userFound.password
+      );
+
+      if (!comparedPasswords) {
+        throw new UnauthorizedException("The email or password is incorrect");
+      }
+
+      const tokenData: TokenData = generateToken(userFound);
+
+      res.status(200).json({
+        status: true,
+        ...tokenData,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
   async register(req: Request, res: Response, next: NextFunction) {
     try {
       const { firstName, lastName, username, email, password, avatarUrl } =
