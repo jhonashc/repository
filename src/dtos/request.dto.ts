@@ -1,3 +1,5 @@
+import { Request } from "express";
+
 import { User } from "../entities";
 
 export interface DataStoredInToken {
@@ -5,7 +7,7 @@ export interface DataStoredInToken {
 }
 
 export interface RequestWithUser extends Request {
-  user: User;
+  user?: User;
 }
 
 export interface TokenData {
