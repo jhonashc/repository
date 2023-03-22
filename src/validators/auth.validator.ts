@@ -1,6 +1,6 @@
 import { check } from "express-validator";
 
-import { ValidateRequest } from "../middlewares";
+import { validateRequest } from "../middlewares";
 
 export const validateLoginUser = [
   check("email")
@@ -10,7 +10,7 @@ export const validateLoginUser = [
     .isEmail()
     .withMessage("invalid email"),
   check("password").not().isEmpty().withMessage("password cannot be empty"),
-  ValidateRequest,
+  validateRequest,
 ];
 
 export const validateRegisterUser = [
@@ -24,5 +24,5 @@ export const validateRegisterUser = [
     .isEmail()
     .withMessage("invalid email"),
   check("password").not().isEmpty().withMessage("password cannot be empty"),
-  ValidateRequest,
+  validateRequest,
 ];

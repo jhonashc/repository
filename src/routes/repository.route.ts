@@ -1,6 +1,7 @@
 import { Router } from "express";
 
 import { RepositoryController } from "../controllers";
+import { isAuthenticated } from "../middlewares";
 import {
   validateCreateRepository,
   validatePaginationQuery,
@@ -13,6 +14,7 @@ const repositoryController = new RepositoryController();
 
 router.post(
   "/",
+  isAuthenticated,
   validateCreateRepository,
   repositoryController.createRepository
 );
@@ -23,6 +25,7 @@ router.get("/:id", validateUuidParam, repositoryController.getRepositoryById);
 
 router.delete(
   "/:id",
+  isAuthenticated,
   validateUuidParam,
   repositoryController.deleteRepositoryById
 );

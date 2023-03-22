@@ -1,6 +1,7 @@
 import { Router } from "express";
 
 import { UserController } from "../controllers";
+import { isAuthenticated } from "../middlewares";
 import {
   validateCreateUser,
   validatePaginationQuery,
@@ -12,7 +13,12 @@ const router = Router();
 
 const userController = new UserController();
 
-router.post("/", validateCreateUser, userController.createUser);
+router.post(
+  "/",
+  isAuthenticated,
+  validateCreateUser,
+  userController.createUser
+);
 
 router.get("/", validatePaginationQuery, userController.getUsers);
 
@@ -20,11 +26,17 @@ router.get("/:id", validateUuidParam, userController.getUserById);
 
 router.patch(
   "/:id",
+  isAuthenticated,
   validateUuidParam,
   validateUpdateUser,
   userController.updateUserById
 );
 
-router.delete("/:id", validateUuidParam, userController.deleteUserById);
+router.delete(
+  "/:id",
+  isAuthenticated,
+  validateUuidParam,
+  userController.deleteUserById
+);
 
 export default router;

@@ -1,6 +1,6 @@
 import { check } from "express-validator";
 
-import { ValidateRequest } from "../middlewares";
+import { validateRequest } from "../middlewares";
 
 export const validateCreateRepository = [
   check("title").not().isEmpty().withMessage("title cannot be empty"),
@@ -13,5 +13,5 @@ export const validateCreateRepository = [
     .withMessage("the authorId must be a uuid"),
   check("tagIds").optional().isArray().withMessage("tagIds must be an array"),
   check("tagIds.*").isUUID().withMessage("tagIds must be an array of uuid"),
-  ValidateRequest,
+  validateRequest,
 ];
