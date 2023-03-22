@@ -5,12 +5,13 @@ import express, { Application } from "express";
 
 import { AppDataSource } from "./config";
 import { ExceptionHandler } from "./middlewares";
-import { repositoryRouter, userRouter } from "./routes";
+import { authRouter, repositoryRouter, userRouter } from "./routes";
 
 class Server {
   private app: Application;
   private port: string;
   private apiRoutes = {
+    auth: "/api/auth",
     repositories: "/api/repositories",
     users: "/api/users",
   };
@@ -35,6 +36,7 @@ class Server {
   }
 
   routes() {
+    this.app.use(this.apiRoutes.auth, authRouter);
     this.app.use(this.apiRoutes.repositories, repositoryRouter);
     this.app.use(this.apiRoutes.users, userRouter);
   }
