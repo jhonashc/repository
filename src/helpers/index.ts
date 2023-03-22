@@ -1,2 +1,2 @@
 export { comparePassword, encryptPassword } from "./bcrypt.helper";
-export { generateToken } from "./jwt.helper";
+export { generateToken, verifyToken } from "./jwt.helper";

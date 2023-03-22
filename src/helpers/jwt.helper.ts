@@ -1,4 +1,4 @@
-import jwt from "jsonwebtoken";
+import jwt, { JwtPayload } from "jsonwebtoken";
 
 import { DataStoredInToken, TokenData } from "../dtos";
 import { User } from "../entities";
@@ -16,4 +16,11 @@ export const generateToken = (user: User): TokenData => {
       expiresIn,
     }),
   };
+};
+
+export const verifyToken = (
+  token: string,
+  secrect: string
+): DataStoredInToken => {
+  return jwt.verify(token, secrect) as DataStoredInToken;
 };
