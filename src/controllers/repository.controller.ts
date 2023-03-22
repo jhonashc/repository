@@ -2,17 +2,25 @@ import slugify from "slugify";
 import { NextFunction, Request, Response } from "express";
 
 import { CreateRepositoryDto, PaginationDto } from "../dtos";
-import { Repository } from "../entities";
+import { Repository, Tag, User } from "../entities";
 import { ConflictException, NotFoundException } from "../exceptions";
-import { RepositoryService } from "../services";
+import { RepositoryService, TagService, UserService } from "../services";
 
 const repositoryService = new RepositoryService();
+const tagService = new TagService();
+const userService = new UserService();
 
 export class RepositoryController {
   async createRepository(req: Request, res: Response, next: NextFunction) {
     try {
-      const { title, slug, description, body, authorId, tagIds } =
-        req.body as CreateRepositoryDto;
+      const {
+        title,
+        slug,
+        description,
+        body,
+        authorId,
+        tagIds = [],
+      } = req.body as CreateRepositoryDto;
 
       const lowerCaseTitle = title.toLowerCase();
 
@@ -23,6 +31,20 @@ export class RepositoryController {
         throw new ConflictException(
           `The repository with title ${lowerCaseTitle} already exists`
         );
+      }
+
+      const userFound: User | null = await userService.getUserById(authorId);
+
+      if (!userFound) {
+        throw new NotFoundException(
+          `The user with id ${authorId} has not been found`
+        );
+      }
+
+      const validTags: Tag[] = await tagService.checkIfTagsExist(tagIds);
+
+      if (validTags.length !== tagIds.length) {
+        throw new NotFoundException(`The id of some tag is invalid`);
       }
 
       const createRepositoryDto: CreateRepositoryDto = {
