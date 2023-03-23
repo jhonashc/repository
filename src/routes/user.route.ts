@@ -2,6 +2,7 @@ import { Router } from "express";
 
 import { UserController } from "../controllers";
 import { isAuthenticated } from "../middlewares";
+import { hasPermission } from "../middlewares/validate-role.middleware";
 import {
   validateCreateUser,
   validatePaginationQuery,
@@ -16,6 +17,7 @@ const userController = new UserController();
 router.post(
   "/",
   isAuthenticated,
+  hasPermission(["admin"]),
   validateCreateUser,
   userController.createUser
 );
@@ -35,6 +37,7 @@ router.patch(
 router.delete(
   "/:id",
   isAuthenticated,
+  hasPermission(["admin"]),
   validateUuidParam,
   userController.deleteUserById
 );
