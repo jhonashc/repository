@@ -1,8 +1,8 @@
 import { NextFunction, Response } from "express";
 
 import { DataStoredInToken, RequestWithUser } from "../dtos";
-import { NotFoundException, UnauthorizedException } from "../exceptions";
 import { User } from "../entities";
+import { NotFoundException, UnauthorizedException } from "../exceptions";
 import { verifyToken } from "../helpers";
 import { UserService } from "../services";
 

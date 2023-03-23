@@ -2,7 +2,7 @@ import { NextFunction, Response } from "express";
 
 import { RequestWithUser } from "../dtos";
 import { User } from "../entities";
-import { BadRequestException, ForbiddenException } from "../exceptions";
+import { ForbiddenException, UnauthorizedException } from "../exceptions";
 
 export const hasPermission = (validRoles: string[] = []) => {
   return async (req: RequestWithUser, res: Response, next: NextFunction) => {
@@ -14,7 +14,7 @@ export const hasPermission = (validRoles: string[] = []) => {
       }
 
       if (!userFound) {
-        throw new BadRequestException("The user has not been found");
+        throw new UnauthorizedException("Authentication required");
       }
 
       for (const role of userFound.roles) {
