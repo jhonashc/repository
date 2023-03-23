@@ -1,7 +1,7 @@
 import { Router } from "express";
 
 import { UserController } from "../controllers";
-import { isAuthenticated } from "../middlewares";
+import { isAuthenticated, hasPermission } from "../middlewares";
 import {
   validateCreateUser,
   validatePaginationQuery,
@@ -16,6 +16,7 @@ const userController = new UserController();
 router.post(
   "/",
   isAuthenticated,
+  hasPermission(["admin"]),
   validateCreateUser,
   userController.createUser
 );
