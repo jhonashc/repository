@@ -1,9 +1,9 @@
 import { NextFunction, Response } from "express";
 
-import { DataStoredInToken, RequestWithUser } from "../dtos";
 import { User } from "../entities";
 import { NotFoundException, UnauthorizedException } from "../exceptions";
 import { verifyToken } from "../helpers";
+import { DataStoredInToken, RequestWithUser } from "../interfaces";
 import { UserService } from "../services";
 
 const userService = new UserService();

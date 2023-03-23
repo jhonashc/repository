@@ -1,23 +1,35 @@
 import { NextFunction, Request, Response } from "express";
-import { validationResult } from "express-validator";
+import { ClassConstructor, plainToInstance } from "class-transformer";
+import { ValidationError, validate } from "class-validator";
 
 import { BadRequestException } from "../exceptions";
+import { ValidationType } from "../interfaces";
 
-export const validateRequest = (
-  req: Request,
-  res: Response,
-  next: NextFunction
+export const validateRequest = <T extends object>(
+  classInstance: ClassConstructor<T>,
+  validationType: ValidationType = ValidationType.BODY
 ) => {
-  const errors = validationResult(req);
+  return async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const convertedObject = plainToInstance(
+        classInstance,
+        req[validationType]
+      );
+      const errors = await validate(convertedObject);
 
-  if (!errors.isEmpty()) {
-    const message = errors
-      .array()
-      .map(({ msg }) => msg)
-      .join(",");
+      if (errors.length > 0) {
+        const message = errors
+          .map((error: ValidationError) =>
+            Object.values(error.constraints ?? [])
+          )
+          .join("|");
 
-    throw new BadRequestException(message);
-  }
+        throw new BadRequestException(message);
+      }
 
-  next();
+      next();
+    } catch (error) {
+      next(error);
+    }
+  };
 };

@@ -1,9 +1,9 @@
-import jwt, { JwtPayload } from "jsonwebtoken";
+import jwt from "jsonwebtoken";
 
-import { DataStoredInToken, TokenData } from "../dtos";
 import { User } from "../entities";
+import { DataStoredInToken, Token } from "../interfaces";
 
-export const generateToken = (user: User): TokenData => {
+export const generateToken = (user: User): Token => {
   const dataStoredInToken: DataStoredInToken = {
     id: user.id,
   };

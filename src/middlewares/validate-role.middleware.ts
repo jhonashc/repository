@@ -1,7 +1,7 @@
 import { NextFunction, Response } from "express";
 
-import { RequestWithUser } from "../dtos";
 import { User } from "../entities";
+import { RequestWithUser } from "../interfaces";
 import { ForbiddenException, UnauthorizedException } from "../exceptions";
 
 export const hasPermission = (validRoles: string[] = []) => {
@@ -24,7 +24,11 @@ export const hasPermission = (validRoles: string[] = []) => {
       }
 
       throw new ForbiddenException(
-        `The user ${userFound.username} need a valid role [${validRoles}].`
+        `The user ${userFound.username} needs the ${
+          validRoles.length > 1
+            ? `roles of [${validRoles}]`
+            : `${validRoles} role`
+        }`
       );
     } catch (error) {
       next(error);
