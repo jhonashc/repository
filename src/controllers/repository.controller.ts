@@ -1,9 +1,13 @@
 import slugify from "slugify";
 import { NextFunction, Request, Response } from "express";
 
-import { CreateRepositoryDto, PaginationDto } from "../dtos";
+import { CreateRepositoryDto, PaginationDto, RequestWithUser } from "../dtos";
 import { Repository, Tag, User } from "../entities";
-import { ConflictException, NotFoundException } from "../exceptions";
+import {
+  ConflictException,
+  NotFoundException,
+  UnauthorizedException,
+} from "../exceptions";
 import { RepositoryService, TagService, UserService } from "../services";
 
 const repositoryService = new RepositoryService();
@@ -121,7 +125,11 @@ export class RepositoryController {
     }
   }
 
-  async deleteRepositoryById(req: Request, res: Response, next: NextFunction) {
+  async deleteRepositoryById(
+    req: RequestWithUser,
+    res: Response,
+    next: NextFunction
+  ) {
     try {
       const { id } = req.params;
 
@@ -131,6 +139,18 @@ export class RepositoryController {
       if (!repositoryFound) {
         throw new NotFoundException(
           `The repository with id ${id} has not been found`
+        );
+      }
+
+      const authenticatedUser: User = req.user!;
+      const repositoryAuthor: User = repositoryFound.author;
+
+      const isTheSameCreator: boolean =
+        authenticatedUser.id === repositoryAuthor.id;
+
+      if (!isTheSameCreator) {
+        throw new UnauthorizedException(
+          `The repository with the title ${id} can only be deleted by the creator`
         );
       }
 
