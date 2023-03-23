@@ -1,9 +1,10 @@
 import { NextFunction, Request, Response } from "express";
 
-import { LoginUserDto, RegisterUserDto, TokenData } from "../dtos";
+import { LoginUserDto, RegisterUserDto } from "../dtos";
 import { User } from "../entities";
 import { ConflictException, UnauthorizedException } from "../exceptions";
 import { comparePassword, encryptPassword, generateToken } from "../helpers";
+import { Token } from "../interfaces";
 import { UserService } from "../services";
 
 const userService = new UserService();
@@ -28,11 +29,11 @@ export class AuthController {
         throw new UnauthorizedException("The email or password is incorrect");
       }
 
-      const tokenData: TokenData = generateToken(userFound);
+      const token: Token = generateToken(userFound);
 
       res.status(200).json({
         status: true,
-        ...tokenData,
+        ...token,
       });
     } catch (error) {
       next(error);
@@ -67,7 +68,7 @@ export class AuthController {
 
       const createdUser: User = await userService.createUser(signUpUserDto);
 
-      const tokenData: TokenData = generateToken(createdUser);
+      const tokenData: Token = generateToken(createdUser);
 
       res.status(201).json({
         status: true,

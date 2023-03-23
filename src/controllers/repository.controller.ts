@@ -1,13 +1,14 @@
 import slugify from "slugify";
 import { NextFunction, Request, Response } from "express";
 
-import { CreateRepositoryDto, PaginationDto, RequestWithUser } from "../dtos";
+import { CreateRepositoryDto, PaginationDto } from "../dtos";
 import { Repository, Tag, User } from "../entities";
 import {
   ConflictException,
   NotFoundException,
   UnauthorizedException,
 } from "../exceptions";
+import { RequestWithUser } from "../interfaces";
 import { RepositoryService, TagService, UserService } from "../services";
 
 const repositoryService = new RepositoryService();
