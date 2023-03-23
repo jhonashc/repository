@@ -1,13 +1,13 @@
 import { Router } from "express";
 
 import { UserController } from "../controllers";
-import { isAuthenticated, hasPermission } from "../middlewares";
+import { CreateUserDto, PaginationDto, UpdateUserDto } from "../dtos";
+import { ValidationType } from "../interfaces";
 import {
-  validateCreateUser,
-  validatePaginationQuery,
-  validateUpdateUser,
-  validateUuidParam,
-} from "../validators";
+  isAuthenticated,
+  hasPermission,
+  validateRequest,
+} from "../middlewares";
 
 const router = Router();
 
@@ -16,28 +16,26 @@ const userController = new UserController();
 router.post(
   "/",
   isAuthenticated,
-  hasPermission(["admin"]),
-  validateCreateUser,
+  validateRequest(CreateUserDto),
+  hasPermission(["admin", "moderator"]),
   userController.createUser
 );
 
-router.get("/", validatePaginationQuery, userController.getUsers);
+router.get(
+  "/",
+  validateRequest(PaginationDto, ValidationType.QUERY),
+  userController.getUsers
+);
 
-router.get("/:id", validateUuidParam, userController.getUserById);
+router.get("/:id", userController.getUserById);
 
 router.patch(
   "/:id",
   isAuthenticated,
-  validateUuidParam,
-  validateUpdateUser,
+  validateRequest(UpdateUserDto),
   userController.updateUserById
 );
 
-router.delete(
-  "/:id",
-  isAuthenticated,
-  validateUuidParam,
-  userController.deleteUserById
-);
+router.delete("/:id", isAuthenticated, userController.deleteUserById);
 
 export default router;

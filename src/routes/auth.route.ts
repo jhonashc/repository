@@ -1,14 +1,19 @@
 import { Router } from "express";
 
 import { AuthController } from "../controllers";
-import { validateLoginUser, validateRegisterUser } from "../validators";
+import { LoginUserDto, RegisterUserDto } from "../dtos";
+import { validateRequest } from "../middlewares";
 
 const router = Router();
 
 const authController = new AuthController();
 
-router.post("/login", validateLoginUser, authController.login);
+router.post("/login", validateRequest(LoginUserDto), authController.login);
 
-router.post("/register", validateRegisterUser, authController.register);
+router.post(
+  "/register",
+  validateRequest(RegisterUserDto),
+  authController.register
+);
 
 export default router;

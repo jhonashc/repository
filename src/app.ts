@@ -10,6 +10,7 @@ import { authRouter, repositoryRouter, userRouter } from "./routes";
 class Server {
   private app: Application;
   private port: string;
+  private environment: string;
   private apiRoutes = {
     auth: "/api/auth",
     repositories: "/api/repositories",
@@ -19,6 +20,7 @@ class Server {
   constructor() {
     this.app = express();
     this.port = process.env.PORT || "8000";
+    this.environment = process.env.NODE_ENV || "dev";
 
     this.middlewares();
     this.routes();
@@ -46,9 +48,10 @@ class Server {
       .then(() => {
         this.app.listen(this.port, () => {
           console.log(`🚀 App running on port ${this.port}`);
+          console.log(`Running in ${this.environment}`);
         });
       })
-      .catch((error) => console.log(error));
+      .catch((error) => console.error(error));
   }
 }
 

@@ -7,6 +7,8 @@ specifiers:
   '@types/morgan': ^1.9.4
   '@types/node': ^18.15.3
   bcrypt: ^5.1.0
+  class-transformer: ^0.5.1
+  class-validator: ^0.14.0
   dotenv: ^16.0.3
   express: ^4.18.2
   express-validator: ^6.15.0
@@ -22,6 +24,8 @@ specifiers:
 
 dependencies:
   bcrypt: 5.1.0
+  class-transformer: 0.5.1
+  class-validator: 0.14.0
   dotenv: 16.0.3
   express: 4.18.2
   express-validator: 6.15.0
@@ -166,6 +170,10 @@ packages:
       '@types/mime': 3.0.1
       '@types/node': 18.15.3
     dev: true
+
+  /@types/validator/13.7.14:
+    resolution: {integrity: sha512-J6OAed6rhN6zyqL9Of6ZMamhlsOEU/poBVvbHr/dKOYKTeuYYMlDkMv+b6UUV0o2i0tw73cgyv/97WTWaUl0/g==}
+    dev: false
 
   /abbrev/1.1.1:
     resolution: {integrity: sha512-nne9/IiQ/hzIhY6pdDnbBtz7DjPTKrY00P/zvPSm5pOFkl6xuGrGnXn/VtTNNfNtAfZ9/1RtehkszU9qcTii0Q==}
@@ -372,6 +380,18 @@ packages:
   /chownr/2.0.0:
     resolution: {integrity: sha512-bIomtDF5KGpdogkLd9VspvFzk9KfpyyGlS8YFVZl7TGPBHL5snIOnxeshwVgPteQ9b4Eydl+pVbIyE1DcvCWgQ==}
     engines: {node: '>=10'}
+    dev: false
+
+  /class-transformer/0.5.1:
+    resolution: {integrity: sha512-SQa1Ws6hUbfC98vKGxZH3KFY0Y1lm5Zm0SY8XX9zbK7FJCyVEac3ATW0RIpwzW+oOfmHE5PMPufDG9hCfoEOMw==}
+    dev: false
+
+  /class-validator/0.14.0:
+    resolution: {integrity: sha512-ct3ltplN8I9fOwUd8GrP8UQixwff129BkEtuWDKL5W45cQuLd19xqmTLu5ge78YDm/fdje6FMt0hGOhl0lii3A==}
+    dependencies:
+      '@types/validator': 13.7.14
+      libphonenumber-js: 1.10.24
+      validator: 13.9.0
     dev: false
 
   /cli-highlight/2.1.11:
@@ -852,6 +872,10 @@ packages:
     dependencies:
       jwa: 1.4.1
       safe-buffer: 5.2.1
+    dev: false
+
+  /libphonenumber-js/1.10.24:
+    resolution: {integrity: sha512-3Dk8f5AmrcWqg+oHhmm9hwSTqpWHBdSqsHmjCJGroULFubi0+x7JEIGmRZCuL3TI8Tx39xaKqfnhsDQ4ALa/Nw==}
     dev: false
 
   /lodash/4.17.21:
