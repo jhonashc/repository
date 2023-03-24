@@ -53,7 +53,9 @@ export class Repository {
   @JoinColumn({ name: "author_id" })
   author: User;
 
-  @OneToMany(() => RepositoryTag, (repositoryTag) => repositoryTag.repository)
+  @OneToMany(() => RepositoryTag, (repositoryTag) => repositoryTag.repository, {
+    cascade: true,
+  })
   tags?: RepositoryTag[];
 
   @Column({
