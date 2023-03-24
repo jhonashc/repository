@@ -28,6 +28,7 @@ export class User {
 
   @Column({
     type: "text",
+    unique: true,
   })
   username: string;
 
