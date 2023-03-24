@@ -1,7 +1,13 @@
 import { Router } from "express";
 
 import { RepositoryController } from "../controllers";
-import { CreateRepositoryDto } from "../dtos";
+import {
+  CreateRepositoryDto,
+  RepositoryQueryDto,
+  UpdateRepositoryDto,
+  UuidParamDto,
+} from "../dtos";
+import { ValidationType } from "../interfaces";
 import { isAuthenticated, validateRequest } from "../middlewares";
 
 const router = Router();
@@ -15,13 +21,30 @@ router.post(
   repositoryController.createRepository
 );
 
-router.get("/", repositoryController.getRepositories);
+router.get(
+  "/",
+  validateRequest(RepositoryQueryDto, ValidationType.QUERY),
+  repositoryController.getRepositories
+);
 
-router.get("/:id", repositoryController.getRepositoryById);
+router.get(
+  "/:id",
+  validateRequest(UuidParamDto, ValidationType.PARAMS),
+  repositoryController.getRepositoryById
+);
+
+router.patch(
+  "/:id",
+  isAuthenticated,
+  validateRequest(UuidParamDto, ValidationType.PARAMS),
+  validateRequest(UpdateRepositoryDto),
+  repositoryController.updateRepositoryById
+);
 
 router.delete(
   "/:id",
   isAuthenticated,
+  validateRequest(UuidParamDto, ValidationType.PARAMS),
   repositoryController.deleteRepositoryById
 );
 

@@ -1,7 +1,12 @@
 import { Router } from "express";
 
 import { UserController } from "../controllers";
-import { CreateUserDto, PaginationDto, UpdateUserDto } from "../dtos";
+import {
+  CreateUserDto,
+  UpdateUserDto,
+  UserQueryDto,
+  UuidParamDto,
+} from "../dtos";
 import { ValidationType } from "../interfaces";
 import {
   isAuthenticated,
@@ -16,14 +21,14 @@ const userController = new UserController();
 router.post(
   "/",
   isAuthenticated,
+  hasPermission(["admin"]),
   validateRequest(CreateUserDto),
-  hasPermission(["admin", "moderator"]),
   userController.createUser
 );
 
 router.get(
   "/",
-  validateRequest(PaginationDto, ValidationType.QUERY),
+  validateRequest(UserQueryDto, ValidationType.QUERY),
   userController.getUsers
 );
 
@@ -32,10 +37,16 @@ router.get("/:id", userController.getUserById);
 router.patch(
   "/:id",
   isAuthenticated,
+  validateRequest(UuidParamDto, ValidationType.PARAMS),
   validateRequest(UpdateUserDto),
   userController.updateUserById
 );
 
-router.delete("/:id", isAuthenticated, userController.deleteUserById);
+router.delete(
+  "/:id",
+  isAuthenticated,
+  validateRequest(UuidParamDto, ValidationType.PARAMS),
+  userController.deleteUserById
+);
 
 export default router;

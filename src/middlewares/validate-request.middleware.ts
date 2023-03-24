@@ -22,7 +22,9 @@ export const validateRequest = <T extends object>(
           .map((error: ValidationError) =>
             Object.values(error.constraints ?? [])
           )
-          .join("|");
+          .join(",");
+
+        console.log({ message });
 
         throw new BadRequestException(message);
       }
