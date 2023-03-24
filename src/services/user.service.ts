@@ -29,8 +29,8 @@ export class UserService {
 
     return this.userRepository.findOne({
       where: [
-        { username: username && username.toLowerCase() },
-        { email: email && email.toLowerCase() },
+        { username: username?.toLowerCase() },
+        { email: email?.toLowerCase() },
       ],
     });
   }
