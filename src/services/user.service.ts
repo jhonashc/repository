@@ -1,7 +1,7 @@
-import { DeleteResult, Repository, UpdateResult } from "typeorm";
+import { DeleteResult, Like, Repository, UpdateResult } from "typeorm";
 
 import { AppDataSource } from "../config";
-import { CreateUserDto, UpdateUserDto, PaginationDto } from "../dtos";
+import { CreateUserDto, UpdateUserDto, UserQueryDto } from "../dtos";
 import { User } from "../entities";
 
 export class UserService {
@@ -15,8 +15,8 @@ export class UserService {
     return this.userRepository.save(createUserDto);
   }
 
-  getUsers(paginationDto: PaginationDto): Promise<User[]> {
-    const { limit = 10, offset = 0 } = paginationDto;
+  getUsers(userQueryDto: UserQueryDto): Promise<User[]> {
+    const { limit = 10, offset = 0 } = userQueryDto;
 
     return this.userRepository.find({
       take: limit,
@@ -24,11 +24,14 @@ export class UserService {
     });
   }
 
-  getUserByEmail(email: string): Promise<User | null> {
+  getUserByQuery(userQueryDto: UserQueryDto): Promise<User | null> {
+    const { username, email } = userQueryDto;
+
     return this.userRepository.findOne({
-      where: {
-        email,
-      },
+      where: [
+        { username: username && username.toLowerCase() },
+        { email: email && email.toLowerCase() },
+      ],
     });
   }
 
