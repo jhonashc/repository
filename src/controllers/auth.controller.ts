@@ -14,7 +14,9 @@ export class AuthController {
     try {
       const { email, password } = req.body as LoginUserDto;
 
-      const userFound: User | null = await userService.getUserByEmail(email);
+      const userFound: User | null = await userService.getUserByQuery({
+        email,
+      });
 
       if (!userFound) {
         throw new UnauthorizedException("The email or password is incorrect");
@@ -45,11 +47,13 @@ export class AuthController {
       const { firstName, lastName, username, email, password, avatarUrl } =
         req.body as RegisterUserDto;
 
+      const lowerCaseUsername = username.toLowerCase();
       const lowerCaseEmail = email.toLowerCase();
 
-      const userFound: User | null = await userService.getUserByEmail(
-        lowerCaseEmail
-      );
+      const userFound: User | null = await userService.getUserByQuery({
+        username: lowerCaseUsername,
+        email: lowerCaseEmail,
+      });
 
       if (userFound) {
         throw new ConflictException(

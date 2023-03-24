@@ -1,7 +1,11 @@
 import slugify from "slugify";
 import { NextFunction, Request, Response } from "express";
 
-import { CreateRepositoryDto, PaginationDto } from "../dtos";
+import {
+  CreateRepositoryDto,
+  RepositoryQueryDto,
+  UpdateRepositoryDto,
+} from "../dtos";
 import { Repository, Tag, User } from "../entities";
 import {
   ConflictException,
@@ -61,8 +65,9 @@ export class RepositoryController {
         tagIds,
       };
 
-      const createdRepository: Repository =
-        await repositoryService.createRepository(createRepositoryDto);
+      const createdRepository = await repositoryService.createRepository(
+        createRepositoryDto
+      );
 
       res.status(201).json({
         status: true,
@@ -75,10 +80,11 @@ export class RepositoryController {
 
   async getRepositories(req: Request, res: Response, next: NextFunction) {
     try {
-      const { limit, offset } = req.query as PaginationDto;
+      const { author, limit, offset } = req.query as RepositoryQueryDto;
 
       const repositories: Repository[] =
         await repositoryService.getRepositories({
+          author,
           limit,
           offset,
         });
@@ -95,6 +101,7 @@ export class RepositoryController {
         data: mappedRepositories,
       });
     } catch (error) {
+      console.log(error);
       next(error);
     }
   }
@@ -115,6 +122,64 @@ export class RepositoryController {
       const mappedRepository = {
         ...repositoryFound,
         tags: repositoryFound.tags?.map(({ tag }) => tag),
+      };
+
+      res.json({
+        status: true,
+        data: mappedRepository,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async updateRepositoryById(
+    req: RequestWithUser,
+    res: Response,
+    next: NextFunction
+  ) {
+    try {
+      const { id } = req.params;
+      const { title, slug, description, body, tagIds } =
+        req.body as UpdateRepositoryDto;
+
+      const repositoryFound: Repository | null =
+        await repositoryService.getRepositoryById(id);
+
+      if (!repositoryFound) {
+        throw new NotFoundException(
+          `The repository with id ${id} has not been found`
+        );
+      }
+
+      const authenticatedUser: User = req.user!;
+      const repositoryAuthor: User = repositoryFound.author;
+
+      const isTheSameCreator: boolean =
+        authenticatedUser.id === repositoryAuthor.id;
+
+      if (!isTheSameCreator) {
+        throw new UnauthorizedException(
+          `The repository with id ${id} can only be updated by the creator`
+        );
+      }
+
+      const updateRepositoryDto: UpdateRepositoryDto = {
+        title: title && title.toLowerCase(),
+        slug: slug && slugify(slug),
+        description,
+        body,
+        tagIds,
+      };
+
+      await repositoryService.updateRepositoryById(id, updateRepositoryDto);
+
+      const updatedRepository: Repository | null =
+        await repositoryService.getRepositoryById(id);
+
+      const mappedRepository = {
+        ...updatedRepository,
+        tags: updatedRepository?.tags?.map(({ tag }) => tag),
       };
 
       res.json({
@@ -151,15 +216,20 @@ export class RepositoryController {
 
       if (!isTheSameCreator) {
         throw new UnauthorizedException(
-          `The repository with the title ${id} can only be deleted by the creator`
+          `The repository with id ${id} can only be deleted by the creator`
         );
       }
 
       await repositoryService.deleteRepositoryById(id);
 
+      const mappedRepository = {
+        ...repositoryFound,
+        tags: repositoryFound.tags?.map(({ tag }) => tag),
+      };
+
       res.json({
         status: true,
-        data: repositoryFound,
+        data: mappedRepository,
       });
     } catch (error) {
       next(error);

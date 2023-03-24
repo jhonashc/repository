@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 
-import { CreateUserDto, PaginationDto, UpdateUserDto } from "../dtos";
+import { CreateUserDto, UpdateUserDto, UserQueryDto } from "../dtos";
 import { User } from "../entities";
 import { ConflictException, NotFoundException } from "../exceptions";
 import { encryptPassword } from "../helpers";
@@ -21,22 +21,22 @@ export class UserController {
         roles,
       } = req.body as CreateUserDto;
 
+      const lowerCaseUsername = username.toLowerCase();
       const lowerCaseEmail = email.toLowerCase();
 
-      const userFound: User | null = await userService.getUserByEmail(
-        lowerCaseEmail
-      );
+      const userFound: User | null = await userService.getUserByQuery({
+        username: lowerCaseUsername,
+        email: lowerCaseEmail,
+      });
 
       if (userFound) {
-        throw new ConflictException(
-          `The user with email ${email} already exists`
-        );
+        throw new ConflictException(`The user already exists`);
       }
 
       const createUserDto: CreateUserDto = {
         firstName,
         lastName,
-        username: username.toLowerCase(),
+        username: lowerCaseUsername,
         email: lowerCaseEmail,
         password: await encryptPassword(password),
         avatarUrl,
@@ -56,9 +56,14 @@ export class UserController {
 
   async getUsers(req: Request, res: Response, next: NextFunction) {
     try {
-      const { limit, offset } = req.query as PaginationDto;
+      const { username, email, limit, offset } = req.query as UserQueryDto;
 
-      const users: User[] = await userService.getUsers({ limit, offset });
+      const users: User[] = await userService.getUsers({
+        username,
+        email,
+        limit,
+        offset,
+      });
 
       res.json({
         status: true,
