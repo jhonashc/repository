@@ -80,11 +80,15 @@ export class RepositoryController {
 
   async getRepositories(req: Request, res: Response, next: NextFunction) {
     try {
-      const { author, limit, offset } = req.query as RepositoryQueryDto;
+      const { author, tag, title, status, limit, offset } =
+        req.query as RepositoryQueryDto;
 
       const repositories: Repository[] =
         await repositoryService.getRepositories({
           author,
+          tag,
+          title,
+          status,
           limit,
           offset,
         });
@@ -101,7 +105,6 @@ export class RepositoryController {
         data: mappedRepositories,
       });
     } catch (error) {
-      console.log(error);
       next(error);
     }
   }
