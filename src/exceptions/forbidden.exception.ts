@@ -7,5 +7,6 @@ export class ForbiddenException extends BaseError {
   constructor(message: string = "Forbidden") {
     super(message);
     this.message = message;
+    this.name = "ForbiddenException";
   }
 }

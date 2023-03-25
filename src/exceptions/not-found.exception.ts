@@ -7,5 +7,6 @@ export class NotFoundException extends BaseError {
   constructor(message: string = "Not Found") {
     super(message);
     this.message = message;
+    this.name = "NotFoundException";
   }
 }
