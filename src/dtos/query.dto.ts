@@ -5,7 +5,10 @@ import {
   Min,
   IsString,
   IsEmail,
+  IsEnum,
 } from "class-validator";
+
+import { RepositoryStatus } from "../entities";
 
 export class PaginationQueryDto {
   @IsOptional()
@@ -22,7 +25,19 @@ export class PaginationQueryDto {
 export class RepositoryQueryDto extends PaginationQueryDto {
   @IsOptional()
   @IsString()
+  title?: string;
+
+  @IsOptional()
+  @IsString()
   author?: string;
+
+  @IsOptional()
+  @IsString()
+  tag?: string;
+
+  @IsOptional()
+  @IsEnum(RepositoryStatus)
+  status?: RepositoryStatus;
 }
 
 export class UserQueryDto extends PaginationQueryDto {
