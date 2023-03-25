@@ -1,4 +1,10 @@
-import { DeleteResult, Equal, Repository } from "typeorm";
+import {
+  DeleteResult,
+  Equal,
+  FindOptionsWhere,
+  Repository,
+  Like,
+} from "typeorm";
 
 import { AppDataSource } from "../config";
 import {
@@ -43,14 +49,49 @@ export class RepositoryService {
   getRepositories(
     repositoryQueryDto: RepositoryQueryDto
   ): Promise<RepositoryEntity[]> {
-    const { author, limit = 10, offset = 0 } = repositoryQueryDto;
+    const {
+      author,
+      tag,
+      title,
+      status,
+      limit = 10,
+      offset = 0,
+    } = repositoryQueryDto;
+
+    const findOptionsWhere: FindOptionsWhere<RepositoryEntity>[] = [];
+
+    if (title) {
+      findOptionsWhere.push({
+        title: Like(`%${title.toLowerCase()}%`),
+      });
+    }
+
+    if (author) {
+      findOptionsWhere.push({
+        author: {
+          username: Like(author.toLowerCase()),
+        },
+      });
+    }
+
+    if (tag) {
+      findOptionsWhere.push({
+        tags: {
+          tag: {
+            name: Like(`%${tag.toLowerCase()}%`),
+          },
+        },
+      });
+    }
+
+    if (status) {
+      findOptionsWhere.push({
+        status,
+      });
+    }
 
     return this.repository.find({
-      where: {
-        author: {
-          username: author?.toLowerCase(),
-        },
-      },
+      where: findOptionsWhere,
       relations: {
         tags: {
           tag: true,
