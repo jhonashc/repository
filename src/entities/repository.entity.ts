@@ -9,8 +9,9 @@ import {
   UpdateDateColumn,
 } from "typeorm";
 
-import { User } from "./user.entity";
+import { FavoriteRepository } from "./favorite-repository.entity";
 import { RepositoryTag } from "./repository-tag.entity";
+import { User } from "./user.entity";
 
 export enum RepositoryStatus {
   PENDING = "pending",
@@ -57,6 +58,15 @@ export class Repository {
     cascade: true,
   })
   tags?: RepositoryTag[];
+
+  @OneToMany(
+    () => FavoriteRepository,
+    (favoriteRepository) => favoriteRepository.repository,
+    {
+      cascade: true,
+    }
+  )
+  favorites?: FavoriteRepository[];
 
   @Column({
     type: "enum",

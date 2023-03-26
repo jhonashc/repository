@@ -7,6 +7,7 @@ import {
   UpdateDateColumn,
 } from "typeorm";
 
+import { FavoriteRepository } from "./favorite-repository.entity";
 import { Repository } from "./repository.entity";
 
 @Entity("user")
@@ -59,6 +60,11 @@ export class User {
 
   @OneToMany(() => Repository, (repository) => repository.author)
   repositories?: Repository[];
+
+  @OneToMany(() => FavoriteRepository, (favorite) => favorite.user, {
+    cascade: true,
+  })
+  favorites?: FavoriteRepository[];
 
   @CreateDateColumn({
     type: "timestamp",
