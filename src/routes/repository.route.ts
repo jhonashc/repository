@@ -2,7 +2,9 @@ import { Router } from "express";
 
 import { RepositoryController } from "../controllers";
 import {
+  CreateFavoriteRepositoryDto,
   CreateRepositoryDto,
+  DeleteFavoriteRepositoryDto,
   RepositoryQueryDto,
   UpdateRepositoryDto,
   UuidParamDto,
@@ -19,6 +21,12 @@ router.post(
   isAuthenticated,
   validateRequest(CreateRepositoryDto),
   repositoryController.createRepository
+);
+
+router.post(
+  "/favorites",
+  validateRequest(CreateFavoriteRepositoryDto),
+  repositoryController.createFavoriteRepository
 );
 
 router.get(
@@ -39,6 +47,12 @@ router.patch(
   validateRequest(UuidParamDto, ValidationType.PARAMS),
   validateRequest(UpdateRepositoryDto),
   repositoryController.updateRepositoryById
+);
+
+router.delete(
+  "/favorites",
+  validateRequest(DeleteFavoriteRepositoryDto),
+  repositoryController.deleteFavoriteRepositoryById
 );
 
 router.delete(

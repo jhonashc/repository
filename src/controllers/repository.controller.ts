@@ -2,11 +2,13 @@ import slugify from "slugify";
 import { NextFunction, Request, Response } from "express";
 
 import {
+  CreateFavoriteRepositoryDto,
   CreateRepositoryDto,
+  DeleteFavoriteRepositoryDto,
   RepositoryQueryDto,
   UpdateRepositoryDto,
 } from "../dtos";
-import { Repository, Tag, User } from "../entities";
+import { FavoriteRepository, Repository, Tag, User } from "../entities";
 import {
   ConflictException,
   NotFoundException,
@@ -72,6 +74,59 @@ export class RepositoryController {
       res.status(201).json({
         status: true,
         data: createdRepository,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async createFavoriteRepository(
+    req: RequestWithUser,
+    res: Response,
+    next: NextFunction
+  ) {
+    try {
+      const { repositoryId, userId } = req.body as CreateFavoriteRepositoryDto;
+
+      const repositoryFound: Repository | null =
+        await repositoryService.getRepositoryById(repositoryId);
+
+      if (!repositoryFound) {
+        throw new NotFoundException(
+          `The repository with id ${repositoryId} has not been found`
+        );
+      }
+
+      const userFound: User | null = await userService.getUserById(userId);
+
+      if (!userFound) {
+        throw new NotFoundException(
+          `The user with id ${userId} has not been found`
+        );
+      }
+
+      const favoriteRepositoryFound: FavoriteRepository | null =
+        await repositoryService.getFavoriteRepositoryById(repositoryId, userId);
+
+      if (favoriteRepositoryFound) {
+        throw new ConflictException(
+          `The favorite repsoitory with id ${repositoryId} already exists`
+        );
+      }
+
+      const createFavoriteRepositoryDto: CreateFavoriteRepositoryDto = {
+        repositoryId,
+        userId,
+      };
+
+      const createdFavoriteRepository: FavoriteRepository =
+        await repositoryService.createFavoriteRepository(
+          createFavoriteRepositoryDto
+        );
+
+      res.json({
+        status: true,
+        data: createdFavoriteRepository,
       });
     } catch (error) {
       next(error);
@@ -233,6 +288,58 @@ export class RepositoryController {
       res.json({
         status: true,
         data: mappedRepository,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async deleteFavoriteRepositoryById(
+    req: RequestWithUser,
+    res: Response,
+    next: NextFunction
+  ) {
+    try {
+      const { repositoryId, userId } = req.body as DeleteFavoriteRepositoryDto;
+
+      const repositoryFound: Repository | null =
+        await repositoryService.getRepositoryById(repositoryId);
+
+      if (!repositoryFound) {
+        throw new NotFoundException(
+          `The repository with id ${repositoryId} has not been found`
+        );
+      }
+
+      const userFound: User | null = await userService.getUserById(userId);
+
+      if (!userFound) {
+        throw new NotFoundException(
+          `The user with id ${userId} has not been found`
+        );
+      }
+
+      const favoriteRepositoryFound: FavoriteRepository | null =
+        await repositoryService.getFavoriteRepositoryById(repositoryId, userId);
+
+      if (!favoriteRepositoryFound) {
+        throw new NotFoundException(
+          `The favorite repsoitory with id ${repositoryId} has not been found`
+        );
+      }
+
+      const deleteFavoriteRepositoryDto: DeleteFavoriteRepositoryDto = {
+        repositoryId,
+        userId,
+      };
+
+      await repositoryService.deleteFavoriteRepositoryId(
+        deleteFavoriteRepositoryDto
+      );
+
+      res.json({
+        status: true,
+        data: repositoryFound,
       });
     } catch (error) {
       next(error);
