@@ -56,18 +56,29 @@ export class UserController {
 
   async getUsers(req: Request, res: Response, next: NextFunction) {
     try {
-      const { username, email, limit, offset } = req.query as UserQueryDto;
+      const { username, email, favorites, limit, offset } =
+        req.query as UserQueryDto;
 
       const users: User[] = await userService.getUsers({
         username,
         email,
+        favorites,
         limit,
         offset,
       });
 
+      const mappedUsers = users.map((user) => {
+        return {
+          ...user,
+          favorites: user.favorites?.map(
+            ({ repository }) => repository
+          ),
+        };
+      });
+
       res.json({
         status: true,
-        data: users,
+        data: mappedUsers,
       });
     } catch (error) {
       next(error);
