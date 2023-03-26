@@ -1,4 +1,4 @@
-import { Type } from "class-transformer";
+import { Transform, Type } from "class-transformer";
 import {
   IsOptional,
   IsPositive,
@@ -7,6 +7,7 @@ import {
   IsEmail,
   IsEnum,
   Max,
+  IsBoolean,
 } from "class-validator";
 
 import { RepositoryStatus } from "../entities";
@@ -50,4 +51,9 @@ export class UserQueryDto extends PaginationQueryDto {
   @IsOptional()
   @IsEmail()
   email?: string;
+
+  @IsOptional()
+  @IsBoolean()
+  @Type(() => Boolean)
+  favorites?: boolean;
 }
