@@ -1,4 +1,8 @@
 export { LoginUserDto, RegisterUserDto } from "./auth.dto";
+export {
+  CreateFavoriteRepositoryDto,
+  DeleteFavoriteRepositoryDto,
+} from "./favorite-repository.dto";
 export { UuidParamDto } from "./params.dto";
 export {
   PaginationQueryDto,
