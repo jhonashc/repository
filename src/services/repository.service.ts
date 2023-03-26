@@ -4,6 +4,8 @@ import {
   FindOptionsWhere,
   Repository,
   Like,
+  In,
+  Not,
 } from "typeorm";
 
 import { AppDataSource } from "../config";
@@ -58,36 +60,32 @@ export class RepositoryService {
       offset = 0,
     } = repositoryQueryDto;
 
-    const findOptionsWhere: FindOptionsWhere<RepositoryEntity>[] = [];
-
-    if (title) {
-      findOptionsWhere.push({
-        title: Like(`%${title.toLowerCase()}%`),
-      });
-    }
+    const findOptionsWhere: FindOptionsWhere<RepositoryEntity> = {};
 
     if (author) {
-      findOptionsWhere.push({
-        author: {
-          username: Like(author.toLowerCase()),
-        },
-      });
+      findOptionsWhere.author = {
+        username: Like(author.toLowerCase()),
+      };
     }
 
     if (tag) {
-      findOptionsWhere.push({
-        tags: {
-          tag: {
-            name: Like(`%${tag.toLowerCase()}%`),
+      findOptionsWhere.tags = {
+        repository: {
+          tags: {
+            tag: {
+              name: Like(`%${tag.toLowerCase()}%`),
+            },
           },
         },
-      });
+      };
+    }
+
+    if (title) {
+      findOptionsWhere.title = Like(`%${title.toLowerCase()}%`);
     }
 
     if (status) {
-      findOptionsWhere.push({
-        status,
-      });
+      findOptionsWhere.status = status;
     }
 
     return this.repository.find({
@@ -96,6 +94,9 @@ export class RepositoryService {
         tags: {
           tag: true,
         },
+      },
+      order: {
+        createdAt: "DESC",
       },
       take: limit,
       skip: offset,
