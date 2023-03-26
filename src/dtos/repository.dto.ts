@@ -4,8 +4,8 @@ import {
   IsOptional,
   IsUUID,
   IsArray,
-  ArrayNotEmpty,
 } from "class-validator";
+
 export class CreateRepositoryDto {
   @IsString()
   @IsNotEmpty()

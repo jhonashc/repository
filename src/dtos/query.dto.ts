@@ -6,6 +6,7 @@ import {
   IsString,
   IsEmail,
   IsEnum,
+  Max,
 } from "class-validator";
 
 import { RepositoryStatus } from "../entities";
@@ -13,6 +14,7 @@ import { RepositoryStatus } from "../entities";
 export class PaginationQueryDto {
   @IsOptional()
   @IsPositive()
+  @Max(20)
   @Type(() => Number)
   limit?: number;
 
