@@ -1,6 +1,12 @@
 import { DataSource } from "typeorm";
 
-import { RepositoryTag, Repository, Tag, User } from "../entities";
+import {
+  FavoriteRepository,
+  RepositoryTag,
+  Repository,
+  Tag,
+  User,
+} from "../entities";
 
 export const AppDataSource = new DataSource({
   type: "postgres",
@@ -10,7 +16,7 @@ export const AppDataSource = new DataSource({
   password: process.env.DB_PASSWORD || "postgres",
   database: process.env.DB_NAME,
   synchronize: process.env.NODE_ENV === "dev" ? true : false,
-  entities: [RepositoryTag, Repository, Tag, User],
+  entities: [FavoriteRepository, RepositoryTag, Repository, Tag, User],
   subscribers: [],
   migrations: [],
 });
