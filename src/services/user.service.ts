@@ -1,4 +1,10 @@
-import { DeleteResult, Like, Repository, UpdateResult } from "typeorm";
+import {
+  DeleteResult,
+  FindOptionsRelations,
+  Like,
+  Repository,
+  UpdateResult,
+} from "typeorm";
 
 import { AppDataSource } from "../config";
 import { CreateUserDto, UpdateUserDto, UserQueryDto } from "../dtos";
@@ -16,9 +22,18 @@ export class UserService {
   }
 
   getUsers(userQueryDto: UserQueryDto): Promise<User[]> {
-    const { limit = 10, offset = 0 } = userQueryDto;
+    const { favorites = false, limit = 10, offset = 0 } = userQueryDto;
+
+    const findOptionsRelations: FindOptionsRelations<User> = {};
+
+    if (favorites) {
+      findOptionsRelations["favorites"] = {
+        repository: true,
+      };
+    }
 
     return this.userRepository.find({
+      relations: findOptionsRelations,
       take: limit,
       skip: offset,
     });
