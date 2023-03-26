@@ -4,24 +4,30 @@ import {
   FindOptionsWhere,
   Repository,
   Like,
-  In,
-  Not,
 } from "typeorm";
 
 import { AppDataSource } from "../config";
 import {
+  CreateFavoriteRepositoryDto,
   CreateRepositoryDto,
+  DeleteFavoriteRepositoryDto,
   RepositoryQueryDto,
   UpdateRepositoryDto,
 } from "../dtos";
-import { Repository as RepositoryEntity, RepositoryTag } from "../entities";
+import {
+  FavoriteRepository,
+  Repository as RepositoryEntity,
+  RepositoryTag,
+} from "../entities";
 import { NotFoundException } from "../exceptions";
 
 export class RepositoryService {
+  private readonly favoriteRepository: Repository<FavoriteRepository>;
   private readonly repository: Repository<RepositoryEntity>;
   private readonly repositoryTag: Repository<RepositoryTag>;
 
   constructor() {
+    this.favoriteRepository = AppDataSource.getRepository(FavoriteRepository);
     this.repository = AppDataSource.getRepository(RepositoryEntity);
     this.repositoryTag = AppDataSource.getRepository(RepositoryTag);
   }
@@ -48,6 +54,24 @@ export class RepositoryService {
     return this.repository.save(newRepository);
   }
 
+  createFavoriteRepository(
+    createFavoriteRepositoryDto: CreateFavoriteRepositoryDto
+  ): Promise<FavoriteRepository> {
+    const { repositoryId, userId } = createFavoriteRepositoryDto;
+
+    const newFavoriteRepository: FavoriteRepository =
+      this.favoriteRepository.create({
+        repository: {
+          id: repositoryId,
+        },
+        user: {
+          id: userId,
+        },
+      });
+
+    return this.favoriteRepository.save(newFavoriteRepository);
+  }
+
   getRepositories(
     repositoryQueryDto: RepositoryQueryDto
   ): Promise<RepositoryEntity[]> {
@@ -63,13 +87,13 @@ export class RepositoryService {
     const findOptionsWhere: FindOptionsWhere<RepositoryEntity> = {};
 
     if (author) {
-      findOptionsWhere.author = {
+      findOptionsWhere["author"] = {
         username: Like(author.toLowerCase()),
       };
     }
 
     if (tag) {
-      findOptionsWhere.tags = {
+      findOptionsWhere["tags"] = {
         repository: {
           tags: {
             tag: {
@@ -81,11 +105,11 @@ export class RepositoryService {
     }
 
     if (title) {
-      findOptionsWhere.title = Like(`%${title.toLowerCase()}%`);
+      findOptionsWhere["title"] = Like(`%${title.toLowerCase()}%`);
     }
 
     if (status) {
-      findOptionsWhere.status = status;
+      findOptionsWhere["status"] = status;
     }
 
     return this.repository.find({
@@ -124,6 +148,22 @@ export class RepositoryService {
     });
   }
 
+  getFavoriteRepositoryById(
+    repositoryId: string,
+    userId: string
+  ): Promise<FavoriteRepository | null> {
+    return this.favoriteRepository.findOne({
+      where: {
+        repository: {
+          id: repositoryId,
+        },
+        user: {
+          id: userId,
+        },
+      },
+    });
+  }
+
   async updateRepositoryById(
     id: string,
     updateRepositoryDto: UpdateRepositoryDto
@@ -153,7 +193,7 @@ export class RepositoryService {
         },
       });
 
-      repositoryFound.tags = tagIds?.map((tagId) =>
+      repositoryFound["tags"] = tagIds?.map((tagId) =>
         this.repositoryTag.create({
           tag: {
             id: tagId,
@@ -176,5 +216,11 @@ export class RepositoryService {
 
   deleteRepositoryById(id: string): Promise<DeleteResult> {
     return this.repository.delete(id);
+  }
+
+  deleteFavoriteRepositoryId(
+    deleteFavoriteRepositoryDto: DeleteFavoriteRepositoryDto
+  ): Promise<DeleteResult> {
+    return this.favoriteRepository.delete(deleteFavoriteRepositoryDto);
   }
 }
