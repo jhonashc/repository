@@ -1,6 +1,7 @@
 import "dotenv/config";
 import "reflect-metadata";
 import morgan from "morgan";
+import helmet from "helmet";
 import express, { Application } from "express";
 
 import { AppDataSource } from "./config";
@@ -29,7 +30,8 @@ class Server {
   }
 
   middlewares() {
-    this.app.use(morgan("tiny"));
+    this.app.use(helmet());
+    this.app.use(morgan("dev"));
     this.app.use(express.json());
   }
 

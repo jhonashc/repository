@@ -12,9 +12,10 @@ specifiers:
   dotenv: ^16.0.3
   express: ^4.18.2
   express-validator: ^6.15.0
+  helmet: ^6.0.1
   jsonwebtoken: ^9.0.0
   morgan: ^1.10.0
-  nodemon: ^2.0.21
+  nodemon: ^2.0.22
   pg: ^8.10.0
   reflect-metadata: ^0.1.13
   slugify: ^1.6.5
@@ -29,6 +30,7 @@ dependencies:
   dotenv: 16.0.3
   express: 4.18.2
   express-validator: 6.15.0
+  helmet: 6.0.1
   jsonwebtoken: 9.0.0
   morgan: 1.10.0
   pg: 8.10.0
@@ -42,7 +44,7 @@ devDependencies:
   '@types/jsonwebtoken': 9.0.1
   '@types/morgan': 1.9.4
   '@types/node': 18.15.3
-  nodemon: 2.0.21
+  nodemon: 2.0.22
   ts-node: 10.9.1_sxidjv3cojnrggmso45tj7hldi
   typescript: 5.0.2
 
@@ -757,6 +759,11 @@ packages:
       function-bind: 1.1.1
     dev: false
 
+  /helmet/6.0.1:
+    resolution: {integrity: sha512-8wo+VdQhTMVBMCITYZaGTbE4lvlthelPYSvoyNvk4RECTmrVjMerp9RfUOQXZWLvCcAn1pKj7ZRxK4lI9Alrcw==}
+    engines: {node: '>=14.0.0'}
+    dev: false
+
   /highlight.js/10.7.3:
     resolution: {integrity: sha512-tzcUFauisWKNHaRkN4Wjl/ZA07gENAjFl3J/c480dprkGTg5EQstgaNFqBfUqCq54kZRIEcreTsAgF/m2quD7A==}
     dev: false
@@ -1028,8 +1035,8 @@ packages:
       whatwg-url: 5.0.0
     dev: false
 
-  /nodemon/2.0.21:
-    resolution: {integrity: sha512-djN/n2549DUtY33S7o1djRCd7dEm0kBnj9c7S9XVXqRUbuggN1MZH/Nqa+5RFQr63Fbefq37nFXAE9VU86yL1A==}
+  /nodemon/2.0.22:
+    resolution: {integrity: sha512-B8YqaKMmyuCO7BowF1Z1/mkPqLk6cs/l63Ojtd6otKjMx47Dq1utxfRxcavH1I7VSaL8n5BUaoutadnsX3AAVQ==}
     engines: {node: '>=8.10.0'}
     hasBin: true
     dependencies:
